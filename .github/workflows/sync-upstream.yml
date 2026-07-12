@@ -44,7 +44,17 @@ jobs:
       - name: Merge upstream into master
         if: steps.check.outputs.has_changes == 'true'
         run: |
-          git merge upstream/master --no-edit
+          git merge upstream/master --no-edit 2>/dev/null || true
+          if git diff --name-only --diff-filter=U | grep -q .; then
+            echo "Merge conflicts detected, auto-resolving..."
+            git checkout --theirs .
+            git checkout HEAD -- .github/workflows/
+            git checkout HEAD -- README.md
+            git checkout HEAD -- package.json
+            git checkout HEAD -- package-lock.json
+            git add .
+            git commit --no-edit
+          fi
           git push origin master
 
       - name: Trigger build & release
