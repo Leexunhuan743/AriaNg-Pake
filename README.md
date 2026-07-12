@@ -17,8 +17,9 @@
 
 | 时间 | 任务 |
 |---|---|
-| 每周一 **00:00 UTC** | 自动检测 [mayswind/AriaNg](https://github.com/mayswind/AriaNg) 上游更新，有变化则创建 PR |
-| 每周一 **06:00 UTC** | 自动构建并发布三个版本到 Release |
+| 每周一 **00:00 UTC** | 自动检测 [mayswind/AriaNg](https://github.com/mayswind/AriaNg) 上游更新 |
+| 有更新时 | 自动合并到 master → 触发构建 → 发布三个版本到 Release |
+| 无更新时 | 跳过，不触发构建 |
 
 ### 本次构建产出的三个版本
 
