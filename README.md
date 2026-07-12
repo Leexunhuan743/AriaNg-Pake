@@ -1,12 +1,45 @@
+# AriaNg-Pake
+
+> **AriaNg 的桌面客户端版本** — 自动构建 Standard / All-In-One / Pake Desktop 三个版本，每周自动同步上游更新并发布 Release。
+
+[![License](https://img.shields.io/github/license/mayswind/AriaNg.svg?style=flat)](https://github.com/mayswind/AriaNg/blob/master/LICENSE)
+[![Build Status](https://github.com/Leexunhuan743/AriaNg/actions/workflows/build-release.yml/badge.svg)](https://github.com/Leexunhuan743/AriaNg/actions/workflows/build-release.yml)
+
+## 📖 本项目说明（中文）
+
+**AriaNg-Pake** 是 [AriaNg](https://github.com/mayswind/AriaNg)（aria2 的现代化 Web 前端）的一个衍生分支，在原版基础上增加了：
+
+- ✅ **GitHub Actions 自动构建** — 每周自动编译 Standard（标准 Web 版）、All-In-One（单文件版）、Pake Desktop（Windows 桌面客户端）
+- ✅ **Pake 桌面打包** — 基于 Rust + Tauri，产物仅 ~5MB，比 Electron 小 20 倍
+- ✅ **上游自动同步** — 每周自动检测 [mayswind/AriaNg](https://github.com/mayswind/AriaNg) 的更新并创建 PR
+- ✅ **自动发布 Release** — 构建完成后自动发布，包含三种版本的下载
+
+### 版本说明
+
+| 版本 | 文件 | 说明 |
+|---|---|---|
+| **Standard** | `AriaNg-Standard.zip` | 标准 Web 版，适用于部署到 Web 服务器，按需加载 |
+| **All-In-One** | `AriaNg-AllInOne.zip` | 单文件版，解压后双击 `index.html` 即可在浏览器中使用 |
+| **Pake Desktop** | `AriaNg.msi` | Windows 桌面客户端，含系统托盘、独立窗口、深色模式 |
+
+### 下载
+
+前往 [Releases](https://github.com/Leexunhuan743/AriaNg/releases) 页面下载最新版本。
+
+---
+
 # AriaNg
+
 [![License](https://img.shields.io/github/license/mayswind/AriaNg.svg?style=flat)](https://github.com/mayswind/AriaNg/blob/master/LICENSE)
 [![Lastest Build](https://img.shields.io/circleci/project/github/mayswind/AriaNg.svg?style=flat)](https://circleci.com/gh/mayswind/AriaNg/tree/master)
 [![Lastest Release](https://img.shields.io/github/release/mayswind/AriaNg.svg?style=flat)](https://github.com/mayswind/AriaNg/releases)
 
 ## Introduction
+
 AriaNg is a modern web frontend making [aria2](https://github.com/aria2/aria2) easier to use. AriaNg is written in pure html & javascript, thus it does not need any compilers or runtime environment. You can just put AriaNg in your web server and open it in your browser. AriaNg uses responsive layout, and supports any desktop or mobile devices.
 
 ## Features
+
 1. Pure Html & Javascript, no runtime required
 2. Responsive design, supporting desktop and mobile devices
 3. User-friendly interface
@@ -28,20 +61,24 @@ AriaNg is a modern web frontend making [aria2](https://github.com/aria2/aria2) e
 10. Less bandwidth usage, only requesting incremental data
 
 ## Screenshots
+
 #### Desktop
 ![AriaNg](https://raw.githubusercontent.com/mayswind/AriaNg-WebSite/master/screenshots/desktop.png)
 #### Mobile Device
 ![AriaNg](https://raw.githubusercontent.com/mayswind/AriaNg-WebSite/master/screenshots/mobile.png)
 
 ## Installation
-AriaNg now provides three versions, standard version, all-in-one version and [AriaNg Native](https://github.com/mayswind/AriaNg-Native). Standard version is suitable for deployment in the web server, and provides on-demand loading. All-In-One version is suitable for local using, and you can download it and just open the only html file in browser. [AriaNg Native](https://github.com/mayswind/AriaNg-Native) is also suitable for local using, and is no need for browser. 
+
+AriaNg now provides three versions, standard version, all-in-one version and [AriaNg Native](https://github.com/mayswind/AriaNg-Native). Standard version is suitable for deployment in the web server, and provides on-demand loading. All-In-One version is suitable for local using, and you can download it and just open the only html file in browser. [AriaNg Native](https://github.com/mayswind/AriaNg-Native) is also suitable for local using, and is no need for browser.
 
 #### Prebuilt release
+
 Latest Release: [https://github.com/mayswind/AriaNg/releases](https://github.com/mayswind/AriaNg/releases)
 
 Latest Daily Build (Standard Version): [https://github.com/mayswind/AriaNg-DailyBuild/archive/master.zip](https://github.com/mayswind/AriaNg-DailyBuild/archive/master.zip)
 
 #### Building from source
+
 Make sure you have [Node.js](https://nodejs.org/), [NPM](https://www.npmjs.com/) and [Gulp](https://gulpjs.com/) installed. Then download the source code, and follow these steps.
 
 ##### Standard Version
@@ -57,6 +94,7 @@ Make sure you have [Node.js](https://nodejs.org/), [NPM](https://www.npmjs.com/)
 The builds will be placed in the dist directory.
 
 #### Usage Notes
+
 Since AriaNg standard version loads language resources asynchronously, you may not open index.html directly on the local file system to run AriaNg. It is recommended that you can use the all-in-one version or deploy AriaNg in a web container or download [AriaNg Native](https://github.com/mayswind/AriaNg-Native) that does not require a browser to run.
 
 ## Translating
@@ -84,14 +122,18 @@ Currently available translations:
 Don't see your language? Help us add it!
 
 ## Documents
+
 1. [English](http://ariang.mayswind.net)
 2. [Simplified Chinese (简体中文)](http://ariang.mayswind.net/zh_Hans)
 
 ## Demo
+
 Please visit [http://ariang.mayswind.net/latest](http://ariang.mayswind.net/latest)
 
 ## Third Party Extensions
+
 There are some third-party applications based on AriaNg, so you can use AriaNg in more scenarios or devices. Please visit [Third Party Extensions](http://ariang.mayswind.net/3rd-extensions.html) for more information.
 
 ## License
+
 [MIT](https://github.com/mayswind/AriaNg/blob/master/LICENSE)
