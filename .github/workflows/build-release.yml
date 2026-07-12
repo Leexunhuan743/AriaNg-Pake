@@ -2,8 +2,8 @@ name: Build & Release
 
 on:
   schedule:
-    - cron: '0 6 * * 1'   # 每周一 UTC 6:00 自动构建（同步上游之后）
-  workflow_dispatch:       # 支持手动触发
+    - cron: '0 6 * * 1'   # 每周一 UTC 6:00
+  workflow_dispatch:       # 手动触发
 
 permissions:
   contents: write
@@ -22,23 +22,53 @@ jobs:
         with:
           fetch-depth: 0
 
+      # ── Check upstream changes ──
+      - name: Check upstream changes
+        id: upstream
+        run: |
+          git remote add upstream https://github.com/mayswind/AriaNg.git
+          git fetch upstream --tags
+          $sha = git rev-parse upstream/master
+          echo "upstream_sha=$sha" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          echo "Upstream commit: $sha"
+
+          if ("${{ github.event_name }}" -eq "schedule") {
+            $tag = "built-$sha"
+            $exists = git rev-parse "refs/tags/$tag" 2>$null
+            if ($LASTEXITCODE -eq 0) {
+              echo "No new upstream commits since last build. Skipping."
+              echo "skip_build=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+            } else {
+              echo "New upstream commits found, proceeding."
+              echo "skip_build=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+            }
+          } else {
+            echo "Manual trigger, always build."
+            echo "skip_build=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          }
+
       - name: Setup Node.js
+        if: steps.upstream.outputs.skip_build != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'npm'
 
       - name: Install dependencies
+        if: steps.upstream.outputs.skip_build != 'true'
         run: npm install
 
       # ── Step 1: Build Standard Version ──
       - name: Build Standard Version
+        if: steps.upstream.outputs.skip_build != 'true'
         run: npx gulp clean build
 
       - name: Package Standard Version (zip)
+        if: steps.upstream.outputs.skip_build != 'true'
         run: Compress-Archive -Path dist/* -DestinationPath AriaNg-Standard.zip
 
       - name: Upload Standard Version artifact
+        if: steps.upstream.outputs.skip_build != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: AriaNg-Standard
@@ -47,12 +77,15 @@ jobs:
 
       # ── Step 2: Build All-In-One Version ──
       - name: Build All-In-One Version
+        if: steps.upstream.outputs.skip_build != 'true'
         run: npx gulp clean build-bundle
 
       - name: Package All-In-One Version (zip)
+        if: steps.upstream.outputs.skip_build != 'true'
         run: Compress-Archive -Path dist/* -DestinationPath AriaNg-AllInOne.zip
 
       - name: Upload All-In-One artifact
+        if: steps.upstream.outputs.skip_build != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: AriaNg-AllInOne
@@ -61,33 +94,45 @@ jobs:
 
       # ── Step 3: Package with Pake ──
       - name: Setup Rust
+        if: steps.upstream.outputs.skip_build != 'true'
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install pake-cli
+        if: steps.upstream.outputs.skip_build != 'true'
         run: npm install -g pake-cli
 
       - name: Package with Pake
+        if: steps.upstream.outputs.skip_build != 'true'
         run: |
           pake ./dist/index.html --name AriaNg-Pake --use-local-file `
             --width 1500 --height 1000 `
             --icon ./src/favicon.png
 
       - name: Upload Pake MSI artifact
+        if: steps.upstream.outputs.skip_build != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: AriaNg-Pake-x64
           path: AriaNg-Pake.msi
           retention-days: 90
 
-      # ── Step 4: Create Release ──
+      # ── Step 4: Tag upstream version ──
+      - name: Tag built upstream version
+        if: steps.upstream.outputs.skip_build != 'true'
+        run: |
+          git tag built-${{ steps.upstream.outputs.upstream_sha }}
+          git push origin built-${{ steps.upstream.outputs.upstream_sha }}
+
+      # ── Step 5: Create Release ──
       - name: Generate version
         id: version
+        if: steps.upstream.outputs.skip_build != 'true'
         run: |
           $date = Get-Date -Format "yyyy.MMdd.HHmm"
           echo "version=v$date" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
       - name: Create Release
-        if: github.event_name != 'schedule'
+        if: steps.upstream.outputs.skip_build != 'true' && github.event_name != 'schedule'
         uses: softprops/action-gh-release@v2
         with:
           files: |
@@ -100,7 +145,7 @@ jobs:
             ## AriaNg Pake Desktop
 
             - 构建时间: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-            - 基于上游 [mayswind/AriaNg](https://github.com/mayswind/AriaNg) commit ${{ github.sha }}
+            - 基于上游 [mayswind/AriaNg](https://github.com/mayswind/AriaNg) commit [${{ steps.upstream.outputs.upstream_sha }}](https://github.com/mayswind/AriaNg/commit/${{ steps.upstream.outputs.upstream_sha }})
 
             ### 下载
 
