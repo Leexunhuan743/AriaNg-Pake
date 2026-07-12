@@ -1,0 +1,74 @@
+name: Build & Release
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 0 * * 0'   # 每周日 UTC 0:00 自动构建
+  workflow_dispatch:       # 支持手动触发
+
+concurrency:
+  group: build-release
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build AriaNg (All-In-One)
+        run: npx gulp clean build-bundle
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install pake-cli
+        run: npm install -g pake-cli
+
+      - name: Package with Pake
+        run: |
+          pake ./dist/index.html --name AriaNg --use-local-file `
+            --show-system-tray --width 1500 --height 1000 `
+            --icon ./src/favicon.png --dark-mode
+
+      - name: Upload MSI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AriaNg-Pake-x64
+          path: AriaNg.msi
+          retention-days: 90
+
+      - name: Create Release
+        if: github.event_name != 'schedule'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: AriaNg.msi
+          tag_name: v${{ github.run_number }}-${{ github.run_attempt }}
+          name: AriaNg Pake v${{ github.run_number }}
+          body: |
+            ## AriaNg Pake Desktop
+            
+            - 构建时间: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            - 基于上游 [mayswind/AriaNg](https://github.com/mayswind/AriaNg) commit ${{ github.sha }}
+            
+            ### 功能特性
+            - 系统托盘支持
+            - 窗口 1500×1000
+            - 深色模式
+            - All-In-One 单文件构建
+          draft: false
+          prerelease: false

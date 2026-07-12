@@ -1,0 +1,61 @@
+name: Sync Upstream
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'   # 每周一 UTC 6:00 检查上游更新
+  workflow_dispatch:       # 支持手动触发
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Add upstream remote
+        run: |
+          git remote add upstream https://github.com/mayswind/AriaNg.git
+          git fetch upstream
+
+      - name: Check for upstream changes
+        id: check
+        run: |
+          UPSTREAM_SHA=$(git rev-parse upstream/main)
+          LOCAL_SHA=$(git rev-parse HEAD)
+          echo "upstream_sha=$UPSTREAM_SHA" >> $GITHUB_OUTPUT
+          echo "local_sha=$LOCAL_SHA" >> $GITHUB_OUTPUT
+          if [ "$UPSTREAM_SHA" != "$LOCAL_SHA" ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create sync PR
+        if: steps.check.outputs.has_changes == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: sync upstream to ${{ steps.check.outputs.upstream_sha }}"
+          title: "Sync upstream AriaNg changes"
+          body: |
+            Automated sync from [mayswind/AriaNg](https://github.com/mayswind/AriaNg)
+            
+            - Upstream commit: ${{ steps.check.outputs.upstream_sha }}
+            - Local commit: ${{ steps.check.outputs.local_sha }}
+            
+            Review and merge to trigger a new Pake release build.
+          branch: sync/upstream
+          base: main
+          delete-branch: true
