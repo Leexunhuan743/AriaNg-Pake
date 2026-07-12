@@ -69,8 +69,8 @@ jobs:
       - name: Package with Pake
         run: |
           pake ./dist/index.html --name AriaNg-Pake --use-local-file `
-            --show-system-tray --width 1500 --height 1000 `
-            --icon ./src/favicon.png --dark-mode
+            --width 1500 --height 1000 `
+            --icon ./src/favicon.png
 
       - name: Upload Pake MSI artifact
         uses: actions/upload-artifact@v4
@@ -108,12 +108,10 @@ jobs:
             |---|---|---|
             | **Standard** | `AriaNg-Standard.zip` | 标准版，适用于 Web 服务器部署，按需加载 |
             | **All-In-One** | `AriaNg-AllInOne.zip` | 单文件版，浏览器直接打开即可使用 |
-            | **Pake Desktop** | `AriaNg-Pake.msi` | Windows 桌面客户端，含系统托盘 |
+            | **Pake Desktop** | `AriaNg-Pake.msi` | Windows 桌面客户端 |
 
             ### Pake 桌面版特性
-            - 系统托盘支持
             - 窗口 1500×1000
-            - 深色模式
             - 基于 Rust Tauri 框架，极小内存占用
           draft: false
           prerelease: false
