@@ -83,7 +83,7 @@ jobs:
       - name: Generate version
         id: version
         run: |
-          $date = Get-Date -Format "yyyy.MMdd"
+          $date = Get-Date -Format "yyyy.MMdd.HHmm"
           echo "version=v$date" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
       - name: Create Release
