@@ -3,7 +3,7 @@
 > **每周自动用 Pake 打包 AriaNg 为 Windows 可安装版本**
 
 [![License](https://img.shields.io/github/license/mayswind/AriaNg.svg?style=flat)](https://github.com/mayswind/AriaNg/blob/master/LICENSE)
-[![Build Status](https://github.com/Leexunhuan743/AriaNg/actions/workflows/build-release.yml/badge.svg)](https://github.com/Leexunhuan743/AriaNg/actions/workflows/build-release.yml)
+[![Build Status](https://github.com/Leexunhuan743/AriaNg-Pake/actions/workflows/build-release.yml/badge.svg)](https://github.com/Leexunhuan743/AriaNg-Pake/actions/workflows/build-release.yml)
 
 ## 📖 本项目说明（中文）
 
@@ -30,7 +30,7 @@
 
 ### 下载
 
-前往 [Releases](https://github.com/Leexunhuan743/AriaNg/releases) 页面下载最新版本。
+前往 [Releases](https://github.com/Leexunhuan743/AriaNg-Pake/releases) 页面下载最新版本。
 
 ---
 
