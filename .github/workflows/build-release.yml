@@ -30,9 +30,29 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build AriaNg (All-In-One)
+      # ── Step 1: Build Standard Version ──
+      - name: Build Standard Version
+        run: npx gulp clean build
+
+      - name: Upload Standard Version artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AriaNg-Standard
+          path: dist/
+          retention-days: 90
+
+      # ── Step 2: Build All-In-One Version ──
+      - name: Build All-In-One Version
         run: npx gulp clean build-bundle
 
+      - name: Upload All-In-One artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AriaNg-AllInOne
+          path: dist/
+          retention-days: 90
+
+      # ── Step 3: Package with Pake ──
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
@@ -45,30 +65,37 @@ jobs:
             --show-system-tray --width 1500 --height 1000 `
             --icon ./src/favicon.png --dark-mode
 
-      - name: Upload MSI artifact
+      - name: Upload Pake MSI artifact
         uses: actions/upload-artifact@v4
         with:
           name: AriaNg-Pake-x64
           path: AriaNg.msi
           retention-days: 90
 
+      # ── Step 4: Create Release ──
       - name: Create Release
         if: github.event_name != 'schedule'
         uses: softprops/action-gh-release@v2
         with:
-          files: AriaNg.msi
+          files: |
+            AriaNg.msi
           tag_name: v${{ github.run_number }}-${{ github.run_attempt }}
           name: AriaNg Pake v${{ github.run_number }}
           body: |
             ## AriaNg Pake Desktop
-            
+
             - 构建时间: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             - 基于上游 [mayswind/AriaNg](https://github.com/mayswind/AriaNg) commit ${{ github.sha }}
-            
-            ### 功能特性
+
+            ### 包含版本
+            - **Standard Version**（标准版，适用于 Web 服务器部署，按需加载）
+            - **All-In-One Version**（单文件版，直接浏览器打开即可使用）
+            - **Pake Desktop**（Windows 桌面客户端，含系统托盘）
+
+            ### Pake 桌面版特性
             - 系统托盘支持
             - 窗口 1500×1000
             - 深色模式
-            - All-In-One 单文件构建
+            - 基于 Rust Tauri 框架，极小内存占用
           draft: false
           prerelease: false
