@@ -1,26 +1,32 @@
 # AriaNg-Pake
 
-> **AriaNg 的桌面客户端版本** — 自动构建 Standard / All-In-One / Pake Desktop 三个版本，每周自动同步上游更新并发布 Release。
+> **每周自动用 Pake 打包 AriaNg 为 Windows 可安装版本**
 
 [![License](https://img.shields.io/github/license/mayswind/AriaNg.svg?style=flat)](https://github.com/mayswind/AriaNg/blob/master/LICENSE)
 [![Build Status](https://github.com/Leexunhuan743/AriaNg/actions/workflows/build-release.yml/badge.svg)](https://github.com/Leexunhuan743/AriaNg/actions/workflows/build-release.yml)
 
 ## 📖 本项目说明（中文）
 
-**AriaNg-Pake** 是 [AriaNg](https://github.com/mayswind/AriaNg)（aria2 的现代化 Web 前端）的一个衍生分支，在原版基础上增加了：
+**AriaNg-Pake** 是 [AriaNg](https://github.com/mayswind/AriaNg)（aria2 的现代化 Web 前端）的一个衍生分支。
 
-- ✅ **GitHub Actions 自动构建** — 每周自动编译 Standard（标准 Web 版）、All-In-One（单文件版）、Pake Desktop（Windows 桌面客户端）
-- ✅ **Pake 桌面打包** — 基于 Rust + Tauri，产物仅 ~5MB，比 Electron 小 20 倍
-- ✅ **上游自动同步** — 每周自动检测 [mayswind/AriaNg](https://github.com/mayswind/AriaNg) 的更新并创建 PR
-- ✅ **自动发布 Release** — 构建完成后自动发布，包含三种版本的下载
+本项目的核心特点：**每周自动使用 [Pake](https://github.com/tw93/Pake) 将 AriaNg 打包成一个可直接安装的 Windows 桌面客户端（.msi），并发布 Release。**
 
-### 版本说明
+[Pake](https://github.com/tw93/Pake) 是一款基于 Rust + Tauri 的网页打包工具，打包出的桌面应用仅 ~5MB，比 Electron 小近 20 倍，内存占用更低、启动更快。
+
+### 自动化流水线
+
+| 时间 | 任务 |
+|---|---|
+| 每周一 **00:00 UTC** | 自动检测 [mayswind/AriaNg](https://github.com/mayswind/AriaNg) 上游更新，有变化则创建 PR |
+| 每周一 **06:00 UTC** | 自动构建并发布三个版本到 Release |
+
+### 本次构建产出的三个版本
 
 | 版本 | 文件 | 说明 |
 |---|---|---|
 | **Standard** | `AriaNg-Standard.zip` | 标准 Web 版，适用于部署到 Web 服务器，按需加载 |
 | **All-In-One** | `AriaNg-AllInOne.zip` | 单文件版，解压后双击 `index.html` 即可在浏览器中使用 |
-| **Pake Desktop** | `AriaNg.msi` | Windows 桌面客户端，含系统托盘、独立窗口、深色模式 |
+| **Pake Desktop** | `AriaNg.msi` | 🎯 **Windows 桌面客户端**（双击安装，含系统托盘、独立窗口、深色模式） |
 
 ### 下载
 
