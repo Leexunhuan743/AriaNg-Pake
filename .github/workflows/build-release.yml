@@ -26,7 +26,7 @@ jobs:
         run: |
           git remote add upstream https://github.com/mayswind/AriaNg.git
           git fetch upstream
-          $sha = git rev-parse upstream/master
+          $sha = git rev-parse --short upstream/master
           echo "upstream_sha=$sha" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           echo "Upstream commit: $sha"
 
