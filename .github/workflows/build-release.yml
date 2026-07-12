@@ -37,6 +37,9 @@ jobs:
       - name: Build Standard Version
         run: npx gulp clean build
 
+      - name: Package Standard Version (zip)
+        run: Compress-Archive -Path dist/* -DestinationPath AriaNg-Standard.zip
+
       - name: Upload Standard Version artifact
         uses: actions/upload-artifact@v4
         with:
@@ -47,6 +50,9 @@ jobs:
       # ── Step 2: Build All-In-One Version ──
       - name: Build All-In-One Version
         run: npx gulp clean build-bundle
+
+      - name: Package All-In-One Version (zip)
+        run: Compress-Archive -Path dist/* -DestinationPath AriaNg-AllInOne.zip
 
       - name: Upload All-In-One artifact
         uses: actions/upload-artifact@v4
@@ -81,6 +87,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
+            AriaNg-Standard.zip
+            AriaNg-AllInOne.zip
             AriaNg.msi
           tag_name: v${{ github.run_number }}-${{ github.run_attempt }}
           name: AriaNg Pake v${{ github.run_number }}
@@ -90,10 +98,13 @@ jobs:
             - 构建时间: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             - 基于上游 [mayswind/AriaNg](https://github.com/mayswind/AriaNg) commit ${{ github.sha }}
 
-            ### 包含版本
-            - **Standard Version**（标准版，适用于 Web 服务器部署，按需加载）
-            - **All-In-One Version**（单文件版，直接浏览器打开即可使用）
-            - **Pake Desktop**（Windows 桌面客户端，含系统托盘）
+            ### 下载
+
+            | 版本 | 文件 | 说明 |
+            |---|---|---|
+            | **Standard** | `AriaNg-Standard.zip` | 标准版，适用于 Web 服务器部署，按需加载 |
+            | **All-In-One** | `AriaNg-AllInOne.zip` | 单文件版，浏览器直接打开即可使用 |
+            | **Pake Desktop** | `AriaNg.msi` | Windows 桌面客户端，含系统托盘 |
 
             ### Pake 桌面版特性
             - 系统托盘支持
