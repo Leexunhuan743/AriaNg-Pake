@@ -26,7 +26,7 @@
 |---|---|---|
 | **Standard** | `AriaNg-Standard.zip` | 标准 Web 版，适用于部署到 Web 服务器，按需加载 |
 | **All-In-One** | `AriaNg-AllInOne.zip` | 单文件版，解压后双击 `index.html` 即可在浏览器中使用 |
-| **Pake Desktop** | `AriaNg.msi` | 🎯 **Windows 桌面客户端**（双击安装，含系统托盘、独立窗口、深色模式） |
+| **Pake Desktop** | `AriaNg-Pake.msi` | 🎯 **Windows 桌面客户端**（双击安装，含系统托盘、独立窗口、深色模式） |
 
 ### 下载
 
