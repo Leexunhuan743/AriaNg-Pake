@@ -80,6 +80,12 @@ jobs:
           retention-days: 90
 
       # ── Step 4: Create Release ──
+      - name: Generate version
+        id: version
+        run: |
+          $date = Get-Date -Format "yyyy.MMdd"
+          echo "version=v$date" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
       - name: Create Release
         if: github.event_name != 'schedule'
         uses: softprops/action-gh-release@v2
@@ -88,8 +94,8 @@ jobs:
             AriaNg-Standard.zip
             AriaNg-AllInOne.zip
             AriaNg.msi
-          tag_name: v${{ github.run_number }}-${{ github.run_attempt }}
-          name: AriaNg Pake v${{ github.run_number }}
+          tag_name: ${{ steps.version.outputs.version }}
+          name: AriaNg-Pake ${{ steps.version.outputs.version }}
           body: |
             ## AriaNg Pake Desktop
 
