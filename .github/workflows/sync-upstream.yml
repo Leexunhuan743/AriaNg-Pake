@@ -32,7 +32,7 @@ jobs:
       - name: Check for upstream changes
         id: check
         run: |
-          UPSTREAM_SHA=$(git rev-parse upstream/main)
+          UPSTREAM_SHA=$(git rev-parse upstream/master)
           LOCAL_SHA=$(git rev-parse HEAD)
           echo "upstream_sha=$UPSTREAM_SHA" >> $GITHUB_OUTPUT
           echo "local_sha=$LOCAL_SHA" >> $GITHUB_OUTPUT
@@ -57,5 +57,5 @@ jobs:
             
             Review and merge to trigger a new Pake release build.
           branch: sync/upstream
-          base: main
+          base: master
           delete-branch: true
