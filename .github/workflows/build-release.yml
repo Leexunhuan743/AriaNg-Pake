@@ -13,6 +13,7 @@ concurrency:
 jobs:
   build:
     runs-on: windows-latest
+    timeout-minutes: 90
 
     steps:
       - name: Checkout
@@ -25,7 +26,7 @@ jobs:
         id: upstream
         run: |
           git remote add upstream https://github.com/mayswind/AriaNg.git
-          git fetch upstream
+          git fetch --depth 1 upstream master
           $sha = git rev-parse --short upstream/master
           echo "upstream_sha=$sha" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           echo "Upstream commit: $sha"
@@ -37,7 +38,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       # ── Step 1: Build Standard Version ──
       - name: Build Standard Version
@@ -71,6 +72,15 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
+      # 静态 key：registry 内容只增不减，pake-cli 升级后旧缓存仍可用；pake 在临时目录重建项目，无 Cargo.lock 可哈希
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: cargo-${{ runner.os }}-pakecli
+
       - name: Install pake-cli
         run: npm install -g pake-cli
 
@@ -78,7 +88,7 @@ jobs:
         run: |
           pake ./dist/index.html --name AriaNg-Pake --use-local-file `
             --width 1500 --height 1000 `
-            --icon ./src/favicon.png
+            --icon ./icons/icon.png
 
       - name: Upload Pake MSI artifact
         uses: actions/upload-artifact@v4
@@ -91,7 +101,7 @@ jobs:
       - name: Generate version
         id: version
         run: |
-          $date = Get-Date -Format "yyyy.MMdd.HHmm"
+          $date = Get-Date -Format "yyyy.MMdd.HHmmss"
           echo "version=v$date" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
       - name: Create Release
